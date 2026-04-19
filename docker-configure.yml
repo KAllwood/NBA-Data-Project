@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: nba_analytics
+    environment:
+      POSTGRES_USER: Khalil
+      POSTGRES_PASSWORD: GimmeAJobPls
+      POSTGRES_DB: nba_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: nba_app
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://Khalil:GimmeAJobPls@db:5432/nba_analytics
+    volumes:
+      - ./src:/app/src
+    command: python src/pipeline.py
+
+volumes:
+  pgdata:
